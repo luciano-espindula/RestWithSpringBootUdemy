@@ -3,10 +3,9 @@ services: docker
 before_install:
   - cd 17\ RestWithSpringBootUdemy\ Docker/
   - echo "We are in the Docker folder!"
+  - echo "${DOCKER_PASSWORD}" | docker login --username "${DOCKER_USERNAME" --password-stdin
 script:
   - docker-compose build
-before_deploy:
-  - echo "${DOCKER_PASSWORD}" | docker login --username "${DOCKER_USERNAME" --password-stdin
 deploy:
   provider: script
   script:
