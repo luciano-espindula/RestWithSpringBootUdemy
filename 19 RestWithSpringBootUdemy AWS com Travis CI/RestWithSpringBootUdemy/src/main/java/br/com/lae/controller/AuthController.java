@@ -20,10 +20,10 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.lae.repository.UserRepository;
 import br.com.lae.security.AccountCredentialsVO;
 import br.com.lae.security.jwt.JwtTokenProvider;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
-@Api(tags = "AuthenticationEndPoint")
+@Tag(name = "Authentication EndPoint")
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -38,7 +38,7 @@ public class AuthController {
 	UserRepository repository;
 	
 	@SuppressWarnings("rawtypes")
-	@ApiOperation(value = "Authenticate a user and return a token")
+	@Operation(summary = "Authenticate a user and return a token")
 	@PostMapping(value = "/signin", produces = { "application/json", "application/xml", "application/x-yaml" },
 			consumes = { "application/json", "application/xml", "application/x-yaml" })
 	public ResponseEntity signin(@RequestBody AccountCredentialsVO data) {

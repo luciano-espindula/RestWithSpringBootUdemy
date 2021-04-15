@@ -11,6 +11,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.Link;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,11 +26,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.lae.data.vo.v1.PersonVO;
 import br.com.lae.services.PersonServices;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 //@CrossOrigin
-@Api(value = "Person",/* description = "Description for person",*/ tags = {"PersonEndPoint"}) 
+@Tag(name = "Person EndPoint") 
 @RestController
 @RequestMapping("/api/person/v1")
 public class PersonController {
@@ -41,7 +42,7 @@ public class PersonController {
 	@Autowired
 	private PagedResourcesAssembler<PersonVO> assembler;
 
-	@ApiOperation(value = "Find all persons")
+	@Operation(summary = "Find all persons")
 	@GetMapping(produces = { "application/json", "application/xml", "application/x-yaml" })
 	public ResponseEntity<?> findAll(@RequestParam(value = "page", defaultValue = "0") int page,
 			@RequestParam(value = "limit", defaultValue = "50") int limit,
@@ -56,6 +57,10 @@ public class PersonController {
 //		PagedModel<EntityModel<PersonVO>> pagedModel = assembler.toModel(persons);
 		
 		return ResponseEntity.ok(assembler.toModel(persons));
+		
+		//LAE - Assim como o Leandro fez ele mata o resumo
+//		Link findAllLink = linkTo(methodOn(PersonController.class).findAll(page, limit, direction)).withSelfRel();
+//		return ResponseEntity.ok(CollectionModel.of(persons, findAllLink));
 	}
 
 	private Pageable getPegeable(int page, int limit, String direction) {
@@ -63,7 +68,7 @@ public class PersonController {
 		return PageRequest.of(page, limit, Sort.by(sortDirection, "firstName"));
 	}
 	
-	@ApiOperation(value = "Find by firstName persons")
+	@Operation(summary = "Find by firstName persons")
 	@GetMapping(value = "/findByName/{firstName}", produces = { "application/json", "application/xml", "application/x-yaml" })
 	public ResponseEntity<CollectionModel<?>> findByName(
 			@PathVariable("firstName") String firstName,
@@ -84,7 +89,7 @@ public class PersonController {
 	}
 	
 //	@CrossOrigin(origins = {"http://localhost:8080"})
-	@ApiOperation(value = "Find by id person")
+	@Operation(summary = "Find by id person")
 	@GetMapping(value = "/{id}", produces = { "application/json", "application/xml", "application/x-yaml" })
 	public PersonVO findById(@PathVariable("id") Long id) {
 		PersonVO personVO = services.findById(id);
@@ -93,7 +98,7 @@ public class PersonController {
 	}
 	
 //	@CrossOrigin(origins = {"http://localhost:8080", "http://edudio.com.br"})
-	@ApiOperation(value = "New person")
+	@Operation(summary = "New person")
 	@PostMapping(produces = { "application/json", "application/xml", "application/x-yaml" },
 			consumes = { "application/json", "application/xml", "application/x-yaml" })
 	public PersonVO create(@RequestBody PersonVO person) {
@@ -102,7 +107,7 @@ public class PersonController {
 		return personVO;
 	}
 
-	@ApiOperation(value = "Update person")
+	@Operation(summary = "Update person")
 	@PutMapping(produces = { "application/json", "application/xml", "application/x-yaml" },
 			consumes = { "application/json", "application/xml", "application/x-yaml" })
 	public PersonVO update(@RequestBody PersonVO person) {
@@ -111,7 +116,7 @@ public class PersonController {
 		return personVO;
 	}
 	
-	@ApiOperation(value = "Disable a person by id")
+	@Operation(summary = "Disable a person by id")
 	@PatchMapping(value = "/{id}", produces = { "application/json", "application/xml", "application/x-yaml" })
 	public PersonVO disablePerson(@PathVariable("id") Long id) {
 		PersonVO personVO = services.disablePerson(id);
@@ -119,7 +124,7 @@ public class PersonController {
 		return personVO;
 	}
 	
-	@ApiOperation(value = "Delete person by id")
+	@Operation(summary = "Delete person by id")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> delete(@PathVariable("id") Long id) {
 		services.delete(id);

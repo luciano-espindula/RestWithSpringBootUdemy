@@ -23,10 +23,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.lae.data.vo.v1.BookVO;
 import br.com.lae.services.BookServices;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
-@Api(value = "Book", tags = "BookEndPoint")
+@Tag(name = "Book EndPoint")
 @RestController
 @RequestMapping("/api/book/v1")
 public class BookController {
@@ -37,7 +37,7 @@ public class BookController {
 	@Autowired
 	private PagedResourcesAssembler<BookVO> assembler;
 	
-	@ApiOperation(value = "New book")
+	@Operation(summary = "New book")
 	@PostMapping(produces = {"application/json", "application/xml", "application/x-yaml"},
 			consumes = {"application/json", "application/xml", "application/x-yaml"})	
 	public BookVO create(@RequestBody BookVO book) {
@@ -46,7 +46,7 @@ public class BookController {
 		return bookVO;
 	}
 	
-	@ApiOperation("Find all books")
+	@Operation(summary = "Find all books")
 	@GetMapping(produces = {"application/json", "application/xml", "application/x-yaml"})
 	public ResponseEntity<?> findAll(@RequestParam(value = "page", defaultValue = "0") int page,
 			@RequestParam(value = "limit", defaultValue = "30") int limit,
@@ -61,7 +61,7 @@ public class BookController {
 		return ResponseEntity.ok(assembler.toModel(books));
 	}
 	
-	@ApiOperation("Find by title books")
+	@Operation(summary = "Find by title books")
 	@GetMapping(value = "/findByTitle/{title}", produces = {"application/json", "application/xml", "application/x-yaml"})
 	public ResponseEntity<?> findByTitle(@PathVariable(value = "title") String title,
 			@RequestParam(value = "page", defaultValue = "0") int page,
@@ -82,7 +82,7 @@ public class BookController {
 		return PageRequest.of(page, limit, Sort.by(sortDirection, "title"));
 	}
 	
-	@ApiOperation("Find by id book")
+	@Operation(summary = "Find by id book")
 	@GetMapping(value = "/{id}", produces = {"application/json", "application/xml", "application/x-yaml"})
 	public BookVO findById(@PathVariable("id") Long id) {
 		BookVO bookVO = service.findById(id);
@@ -90,7 +90,7 @@ public class BookController {
 		return bookVO;
 	}
 
-	@ApiOperation("Update book")
+	@Operation(summary = "Update book")
 	@PutMapping(produces = {"application/json", "application/xml", "application/x-yaml"},
 			consumes = {"application/json", "application/xml", "application/x-yaml"})	
 	public BookVO update(@RequestBody BookVO book) {
@@ -99,7 +99,7 @@ public class BookController {
 		return bookVO;
 	}	
 	
-	@ApiOperation("Delete book for by id")
+	@Operation(summary = "Delete book for by id")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> delete(@PathVariable("id") Long id) {
 		service.delete(id);
